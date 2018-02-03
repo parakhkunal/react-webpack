@@ -1,9 +1,8 @@
-// We are using node's native package 'path'
-// https://nodejs.org/api/path.html
 const path = require('path');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-// Constant with our paths
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+
 const paths = {
   DIST: path.resolve(__dirname, 'dist'),
   SRC: path.resolve(__dirname, 'src'),
@@ -26,15 +25,26 @@ module.exports = {
           'babel-loader',
         ],
       },
+      {
+        test: /\.css$/,
+        loader: ExtractTextPlugin.extract({
+          use: 'css-loader',
+        }),
+      },
+      {
+        test: /\.(png|jpg|gif)$/,
+        use: [
+          'file-loader',
+        ],
+      }
     ],
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: path.join(paths.SRC, 'index.html'),
     }),
+    new ExtractTextPlugin('style.bundle.css'),
   ],
-// Dev server configuration -> ADDED IN THIS STEP
-  // Now it uses our "src" folder as a starting point
   devServer: {
     port: 8090
   },
